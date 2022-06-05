@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - E_Commerce</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/E_Commerce.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        function loadCarousel() {
+            var carouselTop = $("#myCarousel");
+            carouselTop.carousel({ interval: 5000 });
+            carouselTop.carousel("cycle");
+        }
+        $(document).ready(loadCarousel);
+    </script>
+    <script>
+        function getCookie() {
+            let name = "cart=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function SetCardCount() {
+
+            let cartTotal = document.getElementById("iconNumber");
+            let cartCookie = getCookie();
+
+            var cartItems = cartCookie.split(",")
+            var totalCount = 0;
+
+            if (cartCookie != "") {  //return boş döndüğü için
+                for (let i = 0; i < cartItems.length; i++) {
+                    let cartItem = cartItems[i];
+                    let itemDetails = cartItem.split(":");
+                    totalCount = totalCount + parseInt(itemDetails[1]);
+
+                }
+            }
+
+            cartTotal.innerText = totalCount;
+        }
+        $(document).ready(SetCardCount);
+    </script>
+
+</head>
+<body id="body">
+    <header>
+        <nav id="nav" class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">E_Commerce</a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link  text-white" asp-area="" asp-controller="Home" asp-action="Index">AnaSayfa</a>
+                        </li>
+                        @*<li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>*@
+
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="Admin" asp-controller="Categories" asp-action="Index">Kategoriler</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link  text-white" asp-area="Seller" asp-controller="Products" asp-action="Index">Ürünler</a>
+                        </li>
+                        <li class="dropdown">
+                            <button class="dropbtn">
+                                Kategori
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                            <ul class="dropdown-content">
+                                <li><a class="text-white" href="~/">Ayakkabı&Çanta</a></li>
+                                <li><a class="text-white" href="~/">Elektronik</a></li>
+                                <li><a class="text-white" href="~/">Bahçe&Market</a></li>
+                            </ul>
+                        </li>
+
+                        @* <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="PaymentMethods" asp-action="Index">PaymentLogin</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="ItemStatus" asp-action="Index">Item Status</a>
+                        </li>*@
+                    </ul>
+
+                    <ul id="navRight" class="nav navbar-nav navbar-right" style="margin-right:50px">
+
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="Admin" asp-controller="Home" asp-action="Index">Yönetici</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Cart" asp-action="Index"><i id="iconBasket" class="fa fa-shopping-cart"></i><span id="iconNumber"></span></a>
+                        </li>
+                        <li class="nav-item">
+                            @{
+                                string? CustomerId = this.Context.Session.GetString("customer");
+                                if (CustomerId == null)
+                                {
+                                    <a class="nav-link text-white" href="/Customers/Login?currentUrl=@this.Url.PageLink()"> Giriş</a>
+                                }
+                                else
+                                {
+                                    <a class="text-white" href="~/"><i id="homeIcon" class="fa fa-home"></i></a>
+                                }
+                            }
+
+                        </li>
+                        <li>
+
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    @*CAROUSEL*@
+    <div id="slider" class="container">
+        <div class="row">@*
+            <div class="col-md-2"></div>*@
+            <div class="col-md-12">
+                <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item ">
+                            <img class="d-block w-100" src="~/Image/12.jpg" alt="First slide">
+                        </div>
+                        <div class="carousel-item active">
+                            <img class="d-block w-100" src="~/Image/13.jpg" alt="Second slide">
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="~/Image/14.jpg" alt="Third slide">
+                        </div> 
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="~/Image/15.jpg" alt="Third slide">
+                        </div>
+                        <div class="carousel-item">
+                            <img class="d-block w-100" src="~/Image/16.jpg" alt="Third slide">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*<div class="col-md-1"></div>*@
+        </div>
+    </div>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - E_Commerce - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

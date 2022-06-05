@@ -1,0 +1,109 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string imagePath;
+    System.Collections.Generic.List<E_Commerce.Controllers.CartController.CartProduct> products = (System.Collections.Generic.List<E_Commerce.Controllers.CartController.CartProduct>)ViewData["product"];
+    string cartEmpty = "style=display:none";
+    string cartPayment = "style=display:block";
+}
+<h1>SEPETİM</h1>
+<script>
+    var globalProductId, globalProductCount;
+
+    function CalculateCartTotal() {
+        var subTotal = 0;
+        var itemTotal;
+        var itemTotals = document.getElementsByClassName("cartTotal");
+        var itemCount;
+
+        if (globalProductCount == 0) {
+            var productRow = document.getElementById("productRow-" + globalProductId);
+            productRow.remove();
+        }
+        for (i = 0; i < itemTotals.length; i++) {
+            itemTotal = itemTotals[i];
+
+            subTotal += parseFloat(itemTotal.innerHTML);
+
+        }
+
+        var totalCart = document.getElementById("total");
+        totalCart.innerText = subTotal;
+
+        var itemCounts = document.getElementsByClassName("cartUpdate");
+        subTotal = 0;
+        for (i = 0; i < itemCounts.length; i++) {
+
+            itemCount = itemCounts[i];
+            subTotal += parseInt(itemCount.value);
+        }
+
+
+        var countTotal = document.getElementById("iconNumber");
+        countTotal.innerText = subTotal;
+
+        var emptyBasket = document.getElementById("emptyBasket");
+        if (subTotal == 0) {
+
+            emptyBasket.style.display = "block";
+        }
+        else {
+            emptyBasket.style.display = "none";
+        }
+    }
+    function CalculateItemTotal(count, productId) {
+
+        globalProductId = productId;
+        globalProductCount = count;
+        $("#calc-" + productId).load("@Url.Action("CalculateTotal","Cart")/" + productId + "?count=" + count, CalculateCartTotal);  //url yaptıforeachin içinde her işlemi ilgili alan değişsin diye product id belirttik.
+
+    }
+</script>
+@{
+    foreach (E_Commerce.Controllers.CartController.CartProduct cartProduct in products)
+    {
+        imagePath = "/Image/" + cartProduct.Product.ProductId.ToString() + "-0.jpg";
+
+    <div id="productRow-@cartProduct.Product.ProductId" class="col-md-4" style="display: flex;flex-direction: column;align-items: center;border-radius:8px;background-color:gray;border:1px solid; color:white">
+
+                <img src="@imagePath" style="height:260px" />
+                <span>Ürün Adı:@cartProduct.Product.ProductName </span>
+                <span> Marka:@cartProduct.Product.Brand.BrandName </span>
+                <span>Satıcı:@cartProduct.Product.Seller.SellerName </span>
+                <span>Satıcı Puanı: @cartProduct.Product.Seller.SellerRate </span>
+                <span>Ürün Açıklaması:@cartProduct.Product.Description </span>
+
+                <span class="cartTotal" id="calc-@cartProduct.Product.ProductId">@cartProduct.Total</span>
+                <input type="number" class="cartUpdate" onchange="CalculateItemTotal(this.value,@cartProduct.Product.ProductId)" value="@cartProduct.Count" style="column;align-items: center;border-radius:8px;background-color:gray;border:1px solid" />
+                <button class="forEmptyBasket" onclick="CalculateItemTotal(0,@cartProduct.Product.ProductId)" style="height:30px;width:30px">X</button>
+    </div>
+    }
+}
+<div>
+    <span id="total" style="border:1px solid lightgrey">
+        @ViewData["cartTotal"]
+    </span>
+</div>
+<div>
+<button><a href="~/cart/emptybasket">Sepeti Boşalt</a></button>
+</div>
+<br />
+<div>
+    <a href="~/" style="text-decoration:none; border:1px solid black; color:black; padding:5px">Alışverişe Devam Et</a>
+</div>
+<br />
+
+@if (products.Count == 0)
+{
+    cartEmpty = "style=display:block";
+    <div id="emptyBasket" style="border:1px solid black; color:black; padding:15px">
+        Sepetiniz Boş
+        <a href="~/home" style="float:right;text-decoration:none;vertical-align:middle;display:inline-block; border:1px solid black; color:black; padding:5px;">Alışverişe Başla</a>
+    </div>
+    cartPayment = "style=display:none";
+}
+<br />
+<a @cartPayment href="Payment/CheckLogIn" style="float:right; text-decoration:none; border:1px solid black; color:black; padding:5px">Ödeme Ekranı</a>
+
+

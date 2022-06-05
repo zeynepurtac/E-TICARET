@@ -1,0 +1,52 @@
+﻿@model IEnumerable<E_Commerce.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string imagePath;
+}
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<script type="text/javascript">
+    function addCart(item) {
+        $("#iconNumber").load("@Url.Action("Add","Cart")/" + item);
+    }
+</script>
+
+<div class="container">
+    <div class="row" id="prod">
+        @foreach (var item in Model)
+        {
+            imagePath = "/Image/" + item.ProductId.ToString() + "-0.jpg";
+            <div class="col-md-4">
+
+                <div id="productCart">
+
+                    <a asp-action="Details" asp-route-id="@item.ProductId"><img id="productImg" style="height:260px;width:120px" src="@imagePath" /> </a>
+
+
+                    <span>
+                        @Html.DisplayFor(modelItem => item.ProductName)
+                    </span>
+                    <span>
+                        @Html.DisplayFor(modelItem => item.ProductPrice)
+                    </span>
+                    <span>
+                        @Html.DisplayFor(modelItem => item.Brand.BrandName)
+
+                    </span>
+                    <span>
+                        <a id="addToCart" class="btn" onclick="addCart('@item.ProductId')"><i id="fa basket" class="fa fa-shopping-cart"></i>Sepete Ekle</a>
+                    </span>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+
+
+
