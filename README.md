@@ -5,7 +5,6 @@ Authentication
 Ürün-Sepet İşlemleri
 Ürün ve Category  İşlemleri
 Admin , Satıcı,Kullanıcı Paneli
-
 Öngereklilikler
 Visual Studio 2022
 Sql Server 2018 
